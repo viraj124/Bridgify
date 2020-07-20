@@ -417,51 +417,56 @@ contract ERC20Detailed is IERC20 {
 contract ReferenceConsumer is ERC20, ERC20Detailed {
     
   int256 public constant PRECISION = 100000000;
+  int256 public constant WEI_PRECISION = 10000000000;
 
-//   using SafeMath for uint;
+
   using SafeMath for int256;
   AggregatorInterface internal erc20Ref;
   AggregatorInterface internal fiatRef;
 
   
-modifier onlyOwner () {
-    require(owner == msg.sender, "Only called by owner");
-    _;
-}
-
-address public owner;
-    // fiat aggregator address in this case will be eur/usd
-    constructor(address _fiataggregator) public ERC20Detailed("TestnetEUR", "EUR", 18) {
-    owner = msg.sender;
+  // fiat aggregator address in this case will be eur/usd
+  constructor(address _fiataggregator) public ERC20Detailed("TestnetEUR", "EUR", 18) {
     fiatRef = AggregatorInterface(_fiataggregator);
-}
+  }
 
-function setReferenceContract(address _erc20aggregator)
-  internal
-{
+  function setReferenceContract(address _erc20aggregator) internal {
   erc20Ref = AggregatorInterface(_erc20aggregator);
-}
-  // mint erc20 afte calculating the exchange rate for dai/fiat
-  function depositFiat(address token, int256 _daiAmount, address _erc20aggregator) external returns(int256, int256, int256, int256)  {
+  }
+
+  /**
+  * @dev Mint EUR Tokens by swapping it for ERC20
+  * @param token - token address you wish to swap
+  * @param _amount - amount to swap
+  * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
+  */
+  function depositFiat(address token, int256 _amount, address _erc20aggregator) external {
+    // setting the reference contract
     setReferenceContract(_erc20aggregator);
-    IERC20(token).transferFrom(msg.sender, address(this), _daiAmount);
-    // usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
-    int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(_daiAmount);
+    // locking token in contract
+    IERC20(token).transferFrom(msg.sender, address(this), _amount);
+    int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(_amount);
     // precision issue in fiatMintingAmount due to division
     int256 fiatMintingAmount = usdExchangeAmount.mul(PRECISION).div(fiatRef.latestAnswer());
-    
     //minting amount is fiatMintingAmount.mul(10000000000)
-    _mint(msg.sender, fiatMintingAmount.mul(10000000000));
-    return (fiatMintingAmount, erc20Ref.latestAnswer(), fiatRef.latestAnswer(), fiatMintingAmount.mul(10000000000));
-    
+    //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
+    _mint(msg.sender, fiatMintingAmount.mul(WEI_PRECISION));
   }
   
+  /**
+  * @dev Redeem your EUR Tokens for the ERC20 Tokens locked in the contract
+  * @param _amount - amount to redeem
+  * @param token - token address you wish to get back
+  * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
+  */
   function redeeem (int256 _amount, address token, address _erc20aggregator) external {
+    require(IERC20(token).balanceOf(address(this)) > _amount, "The contract should have enough balance to transfer");
+    // setting the reference contract
     setReferenceContract(_erc20aggregator);
     int256 usdExchangeAmount = fiatRef.latestAnswer().mul(_amount);
     int256 daiRedeemAmount = usdExchangeAmount.mul(PRECISION).div(erc20Ref.latestAnswer());
     _burn(msg.sender, _amount);
-    IERC20(token).transferFrom(address(this), msg.sender, daiRedeemAmount.mul(10000000000));
-
+    //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
+    IERC20(token).transferFrom(address(this), msg.sender, daiRedeemAmount.mul(WEI_PRECISION));
   }
 }
