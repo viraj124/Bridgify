@@ -419,6 +419,7 @@ contract ReferenceConsumer is ERC20, ERC20Detailed {
   int256 public constant PRECISION = 100000000;
   int256 public constant WEI_PRECISION = 10000000000;
 
+  event ExchangeRate(int256 finalExchangeRate, int256 erc20rate, int256 fiatrate);
 
   using SafeMath for int256;
   AggregatorInterface internal erc20Ref;
@@ -450,7 +451,9 @@ contract ReferenceConsumer is ERC20, ERC20Detailed {
     int256 fiatMintingAmount = usdExchangeAmount.mul(PRECISION).div(fiatRef.latestAnswer());
     //minting amount is fiatMintingAmount.mul(10000000000)
     //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
-    _mint(msg.sender, fiatMintingAmount.mul(WEI_PRECISION));
+    // adding 5% buffer for proce fluctuations
+    int256 mintingAmount = fiatMintingAmount.mul(WEI_PRECISION).add(((fiatMintingAmount.mul(WEI_PRECISION)).mul(5)).div(100));
+    _mint(msg.sender, mintingAmount);
   }
   
   /**
@@ -468,5 +471,19 @@ contract ReferenceConsumer is ERC20, ERC20Detailed {
     _burn(msg.sender, _amount);
     //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
     IERC20(token).transferFrom(address(this), msg.sender, daiRedeemAmount.mul(WEI_PRECISION));
+  }
+  
+  /**
+  * @dev Get Latest Exchange Rate
+  * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
+  */
+  function getExchangeRate(address _erc20aggregator) public {
+    // setting the reference contract
+    setReferenceContract(_erc20aggregator);
+    // locking token in contract
+    int256 usdExchangeAmount = erc20Ref.latestAnswer();
+    // precision issue in fiatMintingAmount due to division
+    int256 fiatMintingAmount = usdExchangeAmount.mul(PRECISION).div(fiatRef.latestAnswer());
+    emit ExchangeRate(fiatMintingAmount.mul(WEI_PRECISION), usdExchangeAmount, fiatRef.latestAnswer());
   }
 }
