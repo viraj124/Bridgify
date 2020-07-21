@@ -1,6 +1,24 @@
+
+// File: @chainlink\contracts\src\v0.5\interfaces\AggregatorInterface.sol
+
+pragma solidity >=0.5.0;
+
+interface AggregatorInterface {
+  function latestAnswer() external view returns (int256);
+  function latestTimestamp() external view returns (uint256);
+  function latestRound() external view returns (uint256);
+  function getAnswer(uint256 roundId) external view returns (int256);
+  function getTimestamp(uint256 roundId) external view returns (uint256);
+
+  event AnswerUpdated(int256 indexed current, uint256 indexed roundId, uint256 timestamp);
+  event NewRound(uint256 indexed roundId, address indexed startedBy, uint256 startedAt);
+}
+
+// File: sample.sol
+
 pragma solidity ^0.5.0;
 
-import "https://github.com/smartcontractkit/chainlink/evm-contracts/src/v0.5/interfaces/AggregatorInterface.sol";
+
 
 
 
@@ -414,7 +432,7 @@ contract ERC20Detailed is IERC20 {
 }
 
 
-contract ReferenceConsumer is ERC20, ERC20Detailed {
+contract BridgifyEUR is ERC20, ERC20Detailed {
     
   int256 public constant PRECISION = 100000000;
   int256 public constant WEI_PRECISION = 10000000000;
@@ -441,12 +459,12 @@ contract ReferenceConsumer is ERC20, ERC20Detailed {
   * @param _amount - amount to swap
   * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
   */
-  function depositFiat(address token, int256 _amount, address _erc20aggregator) external {
+  function depositFiat(address token, int256 _amount, int256 qty, address _erc20aggregator) external {
     // setting the reference contract
     setReferenceContract(_erc20aggregator);
     // locking token in contract
     IERC20(token).transferFrom(msg.sender, address(this), _amount);
-    int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(_amount);
+    int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(qty);
     // precision issue in fiatMintingAmount due to division
     int256 fiatMintingAmount = usdExchangeAmount.mul(PRECISION).div(fiatRef.latestAnswer());
     //minting amount is fiatMintingAmount.mul(10000000000)
@@ -462,11 +480,11 @@ contract ReferenceConsumer is ERC20, ERC20Detailed {
   * @param token - token address you wish to get back
   * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
   */
-  function redeeem (int256 _amount, address token, address _erc20aggregator) external {
+  function redeeem (int256 _amount, address token, int256 qty, address _erc20aggregator) external {
     require(IERC20(token).balanceOf(address(this)) > _amount, "The contract should have enough balance to transfer");
     // setting the reference contract
     setReferenceContract(_erc20aggregator);
-    int256 usdExchangeAmount = fiatRef.latestAnswer().mul(_amount);
+    int256 usdExchangeAmount = fiatRef.latestAnswer().mul(qty);
     int256 daiRedeemAmount = usdExchangeAmount.mul(PRECISION).div(erc20Ref.latestAnswer());
     _burn(msg.sender, _amount);
     //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
