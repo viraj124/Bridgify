@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import Web3 from "web3";
 import Authereum from "authereum";
 import Web3Modal from "web3modal";
-
-//import abi1 from '../abis/abi1.json';
+import BridgifyEUR from '../abis/BridgifyEUR.json';
 //abi will be same for all three contarcts only address differ
 
 import "./Dashboard.css";
@@ -63,9 +62,9 @@ class App extends Component {
 	const fi1 = "";
     const fi2 = "";
     const fi3 = "";
-	const fiat1 = new this.state.web3.eth.Contract(abi1.abi, fi1);
-	const fiat2 = new this.state.web3.eth.Contract(abi1.abi, fi2);
-	const fiat2 = new this.state.web3.eth.Contract(abi1.abi, fi3);
+	const fiat1 = new this.state.web3.eth.Contract(BridgifyEUR.abi, fi1);
+	const fiat2 = new this.state.web3.eth.Contract(BridgifyEUR.abi, fi2);
+	const fiat2 = new this.state.web3.eth.Contract(BridgifyEUR.abi, fi3);
 	this.setState({ fiat1,fiat2,fiat3 });
 	*/
   }
