@@ -437,6 +437,7 @@ contract BridgifyEUR is ERC20, ERC20Detailed {
   int256 public constant PRECISION = 100000000;
   int256 public constant WEI_PRECISION = 10000000000;
 
+
   event ExchangeRate(int256 finalExchangeRate, int256 erc20rate, int256 fiatrate);
 
   using SafeMath for int256;
@@ -459,19 +460,17 @@ contract BridgifyEUR is ERC20, ERC20Detailed {
   * @param _amount - amount to swap
   * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
   */
-  function depositFiat(address token, int256 _amount, int256 qty, address _erc20aggregator) external {
+  function depositFiat(address token, int256 _amount, address _erc20aggregator) external {
     // setting the reference contract
     setReferenceContract(_erc20aggregator);
     // locking token in contract
-    IERC20(token).transferFrom(msg.sender, address(this), _amount);
-    int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(qty);
+    // since token price can fluctuate a bit so locking in 5% of the additional amount
+    int256 collateralAmount = _amount.add((_amount.mul(5)).div(100));
+    IERC20(token).transferFrom(msg.sender, address(this), collateralAmount);
+    int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(_amount);
     // precision issue in fiatMintingAmount due to division
-    int256 fiatMintingAmount = usdExchangeAmount.mul(PRECISION).div(fiatRef.latestAnswer());
-    //minting amount is fiatMintingAmount.mul(10000000000)
-    //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
-    // adding 5% buffer for proce fluctuations
-    int256 mintingAmount = fiatMintingAmount.mul(WEI_PRECISION).add(((fiatMintingAmount.mul(WEI_PRECISION)).mul(5)).div(100));
-    _mint(msg.sender, mintingAmount);
+    int256 fiatMintingAmount = usdExchangeAmount.div(fiatRef.latestAnswer());
+    _mint(msg.sender, fiatMintingAmount);
   }
   
   /**
@@ -480,15 +479,16 @@ contract BridgifyEUR is ERC20, ERC20Detailed {
   * @param token - token address you wish to get back
   * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
   */
-  function redeeem (int256 _amount, address token, int256 qty, address _erc20aggregator) external {
+  function redeeem (int256 _amount, address token, address _erc20aggregator) external {
     require(IERC20(token).balanceOf(address(this)) > _amount, "The contract should have enough balance to transfer");
+    require(IERC20(address(this)).balanceOf(msg.sender) >= _amount, "Low on EUR Balance");
     // setting the reference contract
     setReferenceContract(_erc20aggregator);
-    int256 usdExchangeAmount = fiatRef.latestAnswer().mul(qty);
-    int256 daiRedeemAmount = usdExchangeAmount.mul(PRECISION).div(erc20Ref.latestAnswer());
+    int256 usdExchangeAmount = fiatRef.latestAnswer().mul(_amount);
+    int256 daiRedeemAmount = usdExchangeAmount.div(erc20Ref.latestAnswer());
     _burn(msg.sender, _amount);
     //usd pairs are multiplied with 10^8 to account decimal places so converting the final result to wei
-    IERC20(token).transferFrom(address(this), msg.sender, daiRedeemAmount.mul(WEI_PRECISION));
+    IERC20(token).transfer(msg.sender, daiRedeemAmount);
   }
   
   /**
