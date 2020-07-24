@@ -96,6 +96,42 @@ render() {
                     <div class="gridcontent2">
                       <div className="box3">
                         
+						<form>
+						
+						<input className="input"
+                        placeholder={`input`}
+                                    
+                        />
+								  
+				        <input className="input"
+                        placeholder={`output`}
+                                    
+                        />
+						
+						<div className="custom-select">
+                                <select
+                                  className="select2"
+                                  
+                                >
+                                  <option >
+                                    Select Fiat
+                                  </option>
+                                  <option>EUR</option>
+                                  <option>JPY</option>
+                                  <option>GBP</option>
+                                </select>
+						</div>
+						
+						<button
+                          type="button"
+                          className="new-button2 shadow animate red"
+                          
+                        >
+						Swap
+                        </button>
+						
+						</form>
+						
                       </div>
                     </div>
                   </div>
