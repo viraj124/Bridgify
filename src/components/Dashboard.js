@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import Web3 from "web3";
 import Authereum from "authereum";
 import Web3Modal from "web3modal";
+
+//import abi1 from '../abis/abi1.json';
+//abi will be same for all three contarcts only address differ
+
 import "./Dashboard.css";
 
 class App extends Component {
@@ -55,7 +59,21 @@ class App extends Component {
     const accounts = await this.state.web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
     //getcontracts instance
+	/*
+	const fi1 = "";
+    const fi2 = "";
+    const fi3 = "";
+	const fiat1 = new this.state.web3.eth.Contract(abi1.abi, fi1);
+	const fiat2 = new this.state.web3.eth.Contract(abi1.abi, fi2);
+	const fiat2 = new this.state.web3.eth.Contract(abi1.abi, fi3);
+	this.setState({ fiat1,fiat2,fiat3 });
+	*/
   }
+
+  //another method for getBalance of each token
+  //another method to get exchange rate
+  //another method for calling mint
+  //another method for unmint
 
 render() {
     return (
@@ -82,8 +100,20 @@ render() {
                <div class="gridcontainer1">
                   <div class="gridbody1">
                     <div class="gridcontent1">
-                      <div className="box3">
-                        
+                      <div className="box4">
+					  <div>Balances</div>
+                        <div className="card2">
+						heysfdsgsdgdsggds
+						</div>
+						<div className="card2">
+						heysfdsgsdgdsggds
+						</div>
+						<div className="card2">
+						heysfdsgsdgdsggds
+						</div>
+						<div className="card2">
+						heysfdsgsdgdsggds
+						</div>
                       </div>
                     </div>
                   </div>
