@@ -1,7 +1,7 @@
 
 // File: @chainlink\contracts\src\v0.5\interfaces\AggregatorInterface.sol
 
-pragma solidity >=0.5.0;
+pragma solidity >=0.6.0;
 
 interface AggregatorInterface {
   function latestAnswer() external view returns (int256);
@@ -16,7 +16,7 @@ interface AggregatorInterface {
 
 // File: sample.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.6.0;
 
 
 
