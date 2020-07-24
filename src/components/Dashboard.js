@@ -73,14 +73,32 @@ class App extends Component {
   //try to have one method to fetch balance of any token instead of multiple
   /*
   getBalance = async () => {
-	  result = await this.state.Fiat1.methods.balanceOf(this.state.account).call({from: this.state.account });
-	  return result;
+	  result1 = await this.state.Fiat1.methods.balanceOf(this.state.account).call({from: this.state.account });
+	  return result1;
   }
   */
   //another method to get exchange rate
-  
+  /*
+  getrate = async (aagregatoraddress) => {
+	  result2 = await this.state.Fiat1.methods.getExchangeRate(aagregatoraddress).call({from: this.state.account });
+	  return result2;
+  }
+  */
   //another method for calling mint
+  /*
+  mint = async (address token, int256 _amount, address _erc20aggregator) => {
+	  result3 = await this.state.Fiat1.methods.depositFiat((address token, int256 _amount, address _erc20aggregator).send({from: this.state.account });
+	  return result3;
+  }
+  */
+  
   //another method for unmint
+  /*
+  unmint = async (int256 _amount, address token, address _erc20aggregator) => {
+	  result4 = await this.state.Fiat1.methods.redeem(int256 _amount, address token, address _erc20aggregator).send({from: this.state.account });
+	  return result4;
+  }
+  */
 
 render() {
     return (
