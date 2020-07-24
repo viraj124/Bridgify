@@ -98,11 +98,13 @@ render() {
                         
 						<form>
 						
+						<div className="box4">
 						<input className="input"
                         placeholder={`input`}
                                     
                         />
-								  
+						
+                        <div>						
 				        <input className="input"
                         placeholder={`output`}
                                     
@@ -121,6 +123,7 @@ render() {
                                   <option>GBP</option>
                                 </select>
 						</div>
+						</div>
 						
 						<button
                           type="button"
@@ -129,6 +132,7 @@ render() {
                         >
 						Swap
                         </button>
+						</div>
 						
 						</form>
 						
