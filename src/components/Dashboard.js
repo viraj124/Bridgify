@@ -77,11 +77,11 @@ render() {
 		
         <div id="container">
           <div className="content">
-            
+            <div className="container2">
               <div className="box1">
-               <div class="gridcontainer">
-                  <div class="gridbody">
-                    <div class="gridcontent">
+               <div class="gridcontainer1">
+                  <div class="gridbody1">
+                    <div class="gridcontent1">
                       <div className="box3">
                         
                       </div>
@@ -91,9 +91,9 @@ render() {
               </div>
 			 
               <div className="box2">
-                <div class="gridcontainer">
-                  <div class="gridbody">
-                    <div class="gridcontent">
+                <div class="gridcontainer2">
+                  <div class="gridbody2">
+                    <div class="gridcontent2">
                       <div className="box3">
                         
                       </div>
@@ -102,6 +102,7 @@ render() {
                 </div>
               </div>
 			  
+			  </div>
 			  
             </div>
          </div>
