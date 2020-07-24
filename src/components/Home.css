@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css?family=Kanit:100,200,300,400,500");
+@import url('https://fonts.googleapis.com/css?family=Rubik:700&display=swap');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css");
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+#container {
+    background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.25) 100%, transparent), url("http://cdn.anilive.in.th/img/A.jpg");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25) 100%, transparent), url("http://cdn.anilive.in.th/img/A.jpg");
+    background-image: -webkit-linear-gradient(bottom left, rgba(0, 0, 255, 0.5), rgba(255, 0, 0, 0.75)), -webkit-linear-gradient(rgba(0, 0, 255, 0.25) 100%, transparent), url("http://cdn.anilive.in.th/img/A.jpg");
+    background-image: linear-gradient(to top right, rgba(0, 0, 255, 0.5), rgba(255, 0, 0, 0.75)), linear-gradient(rgba(0, 0, 255, 0.25) 100%, transparent), url("http://cdn.anilive.in.th/img/A.jpg");
+    position: relative;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    font-family: 'Rubik', sans-serif;
+    font-size: 20px;
+    line-height: 30px;
+}
+
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 30px;
+    text-align: center;
+    -webkit-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    opacity: 0;
+    -webkit-animation: 0.85s 0.85s forwards slide_in;
+    animation: 0.85s 0.85s forwards slide_in;
+}
+
+@-webkit-keyframes slide_in {
+    100% {
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes slide_in {
+    100% {
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+#container h1,
+#container p {
+    margin: 15px 0;
+}
+
+#container h1 {
+    font-size: 40px;
+    line-height: 50px;
+    letter-spacing: 5px;
+}
+
+#container h1:after {
+    content: "";
+    display: block;
+    width: 180px;
+    height: 3.75px;
+    margin: 0 auto -1.875px;
+    background-color: currentColor;
+}
+
+#container a {
+    color: #fff;
+}
+
+#btn {
+  background: #222;
+  height: 30px;
+  min-width: 60px;
+  border: none;
+  border-radius: 10px;
+  color: #eee;
+  font-size: 20px;
+  font-family: "Kanit", sans-serif;
+  transition: 1s;
+  -webkit-tap-highlight-color: transparent;
+  align-items: center;
+  cursor: pointer;
+  padding-top: 5px;
+}
+
+#btn #circle {
+  width: 5px;
+  height: 5px;
+  background: transparent;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  overflow: hidden;
+  transition: 500ms;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+#btn:hover {
+  background: transparent;
+}
+
+#btn:hover #circle {
+  height: 60px;
+  width: 100px;
+  left: 0;
+  border-radius: 0;
+  border-bottom: 2px solid #eee;
+}
+
