@@ -70,7 +70,15 @@ class App extends Component {
   }
 
   //another method for getBalance of each token
+  //try to have one method to fetch balance of any token instead of multiple
+  /*
+  getBalance = async () => {
+	  result = await this.state.Fiat1.methods.balanceOf(this.state.account).call({from: this.state.account });
+	  return result;
+  }
+  */
   //another method to get exchange rate
+  
   //another method for calling mint
   //another method for unmint
 
