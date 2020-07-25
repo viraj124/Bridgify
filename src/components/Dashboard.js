@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       color: "#85f7ff",
       buttonText: "Connect",
+	  //add more variables to store rates here
     };
   }
 
@@ -68,37 +69,51 @@ class App extends Component {
 	this.setState({ fiat1,fiat2,fiat3 });
 	*/
   }
-
+   
+  //web3 methods code
+  //method for ether to wei
+  //converts input amount to wei
+  /*
+  ethertowei = (amount) => {
+  let value = web3.utils.toWei(amount, 'ether');
+  return value;
+  }
+  */
+  
   //another method for getBalance of each token
   //try to have one method to fetch balance of any token instead of multiple
   /*
   getBalance = async () => {
-	  result1 = await this.state.Fiat1.methods.balanceOf(this.state.account).call({from: this.state.account });
+	  let result1 = await this.state.Fiat1.methods.balanceOf(this.state.account).call({from: this.state.account });
 	  return result1;
   }
   */
+  
   //another method to get exchange rate
   /*
-  getrate = async (aagregatoraddress) => {
-	  result2 = await this.state.Fiat1.methods.getExchangeRate(aagregatoraddress).call({from: this.state.account });
+  getrate = async (erc20aggregator,amount) => {
+	  let result2 = await this.state.Fiat1.methods.getExchangeRate(erc20aggregator,amount).call({from: this.state.account });
 	  return result2;
   }
   */
+  
   //another method for calling mint
   /*
-  mint = async (address token, int256 _amount, address _erc20aggregator) => {
-	  result3 = await this.state.Fiat1.methods.depositFiat((address token, int256 _amount, address _erc20aggregator).send({from: this.state.account });
+  mint = async (token,amount,erc20aggregator) => {
+	  let result3 = await this.state.Fiat1.methods.depositFiat(token,amount,erc20aggregator).send({from: this.state.account });
 	  return result3;
   }
   */
   
   //another method for unmint
   /*
-  unmint = async (int256 _amount, address token, address _erc20aggregator) => {
-	  result4 = await this.state.Fiat1.methods.redeem(int256 _amount, address token, address _erc20aggregator).send({from: this.state.account });
+  unmint = async (amount,token,erc20aggregator) => {
+	  let result4 = await this.state.Fiat1.methods.redeem(amount,token,erc20aggregator).send({from: this.state.account });
 	  return result4;
   }
   */
+  
+  //add same methods as above for fiat2,fiat3,integrate with ui elements
 
 render() {
     return (
@@ -126,19 +141,25 @@ render() {
                   <div class="gridbody1">
                     <div class="gridcontent1">
                       <div className="box4">
+					  
 					  <div>Balances</div>
+					  
                         <div className="card2">
 						heysfdsgsdgdsggds
 						</div>
+						
 						<div className="card2">
 						heysfdsgsdgdsggds
 						</div>
+						
 						<div className="card2">
 						heysfdsgsdgdsggds
 						</div>
+						
 						<div className="card2">
 						heysfdsgsdgdsggds
 						</div>
+						
                       </div>
                     </div>
                   </div>
