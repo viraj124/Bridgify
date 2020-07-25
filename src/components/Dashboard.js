@@ -173,12 +173,30 @@ render() {
                       <div className="box3">
                         
 						<form>
-						
+
 						<div className="box4">
+						
+						<div>
 						<input className="input"
                         placeholder={`input`}
                                     
                         />
+						
+						<div className="custom-select">
+                                <select
+                                  className="select2"
+                                  
+                                >
+                                  <option >
+                                    Select Fiat
+                                  </option>
+                                  <option>EUR</option>
+                                  <option>JPY</option>
+                                  <option>GBP</option>
+								  <option>DAI</option>
+                                </select>
+						</div>
+						</div>
 						
                         <div>						
 				        <input className="input"
@@ -197,10 +215,12 @@ render() {
                                   <option>EUR</option>
                                   <option>JPY</option>
                                   <option>GBP</option>
+								  <option>DAI</option>
                                 </select>
 						</div>
 						</div>
 						
+						<div>
 						<button
                           type="button"
                           className="new-button2 shadow animate red"
@@ -210,6 +230,7 @@ render() {
                         </button>
 						</div>
 						
+						</div>
 						</form>
 						
                       </div>
