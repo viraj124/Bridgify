@@ -255,7 +255,7 @@ class App extends Component {
                                                         <div>
                                                         {/* this needs to be fixed and dependednty on the input amount see a way to update realtime */}
                                                             <input className="input"
-                                                                placeholder={`output`}/>
+                                                                placeholder={this.state.eurbalance}/>
 
                                                             <div className="custom-select">
                                                                 <select className="select2" onChange={this.handleOutputAssetChange}>
