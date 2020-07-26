@@ -187,7 +187,7 @@ class App extends Component {
                                         <div class="gridcontent1">
                                             <div className="box4">
 
-                                                <div>Balances</div>
+                                                <div className="box3">Balance</div>
 
                                                 <div className="card2">
                                                     heysfdsgsdgdsggds
@@ -219,7 +219,7 @@ class App extends Component {
 
                                                 <form>
 
-                                                    <div className="box4">
+                                                    <div className="box5">
 
                                                         <div>
                                                             <input className="input"
@@ -228,7 +228,7 @@ class App extends Component {
                                                             <div className="custom-select">
                                                                 <select className="select2"  onChange={this.handleInputAssetChange}>
                                                                     <option selected disabled>
-                                                                        Select Input Asset
+                                                                        Select Asset
                                                                     </option>
                                                                     <option>EUR</option>
                                                                     <option>JPY</option>
@@ -246,7 +246,7 @@ class App extends Component {
                                                             <div className="custom-select">
                                                                 <select className="select2" onChange={this.handleOutputAssetChange}>
                                                                     <option selected disabled>
-                                                                        Select Output Asset
+                                                                        Select Asset
                                                                     </option>
                                                                     {this.state.inputAsset === "DAI" && <option>EUR</option>}
                                                                     {this.state.inputAsset === "DAI" && <option>JPY</option>}
@@ -257,7 +257,7 @@ class App extends Component {
                                                         </div>
 
                                                         <div>
-                                                            <button type="button" className="new-button2 shadow animate red">
+                                                            <button type="button" className="swapbutton2">
                                                                 Swap
                                                             </button>
                                                         </div>
