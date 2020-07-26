@@ -1,5 +1,5 @@
 /**
- *Submitted for verification at Etherscan.io on 2020-07-24
+ *Submitted for verification at Etherscan.io on 2020-07-26
 */
 
 // File: @chainlink\contracts\src\v0.5\interfaces\AggregatorInterface.sol
@@ -436,31 +436,23 @@ contract ERC20Detailed is IERC20 {
 
 
 contract BridgifyJPY is ERC20, ERC20Detailed {
-  event ExchangeRate(int256 finalExchangeRate);
-
   using SafeMath for int256;
   AggregatorInterface internal erc20Ref;
   AggregatorInterface internal fiatRef;
 
   
   // fiat aggregator address in this case will be eur/usd
-  constructor(address _fiataggregator) public ERC20Detailed("TestnetJPY", "JPY", 18) {
+  constructor(address _fiataggregator, address _erc20aggregator) public ERC20Detailed("TestnetJPY", "JPY", 18) {
     fiatRef = AggregatorInterface(_fiataggregator);
-  }
-
-  function setReferenceContract(address _erc20aggregator) internal {
-  erc20Ref = AggregatorInterface(_erc20aggregator);
+    erc20Ref = AggregatorInterface(_erc20aggregator);
   }
 
   /**
-  * @dev Mint EUR Tokens by swapping it for ERC20
+  * @dev Mint JPY Tokens by swapping it for ERC20
   * @param token - token address you wish to swap
   * @param _amount - amount to swap
-  * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
   */
-  function depositFiat(address token, int256 _amount, address _erc20aggregator) external {
-    // setting the reference contract
-    setReferenceContract(_erc20aggregator);
+  function depositFiat(address token, int256 _amount) external {
     // locking token in contract
     // since token price can fluctuate a bit so locking in 3% of the additional amount
     int256 collateralAmount = _amount.add((_amount.mul(3)).div(100));
@@ -472,16 +464,13 @@ contract BridgifyJPY is ERC20, ERC20Detailed {
   }
   
   /**
-  * @dev Redeem your EUR Tokens for the ERC20 Tokens locked in the contract
+  * @dev Redeem your DAI Tokens for the ERC20 Tokens locked in the contract
   * @param token - token address you wish to get back
   * @param _amount - amount to redeem
-  * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
   */
-  function redeem (address token, int256 _amount, address _erc20aggregator) external {
+  function redeem (address token, int256 _amount) external {
     require(IERC20(token).balanceOf(address(this)) > _amount, "The contract should have enough balance to transfer");
     require(IERC20(address(this)).balanceOf(msg.sender) >= _amount, "Low on EUR Balance");
-    // setting the reference contract
-    setReferenceContract(_erc20aggregator);
     int256 usdExchangeAmount = fiatRef.latestAnswer().mul(_amount);
     int256 daiRedeemAmount = usdExchangeAmount.div(erc20Ref.latestAnswer());
     _burn(msg.sender, _amount);
@@ -491,15 +480,13 @@ contract BridgifyJPY is ERC20, ERC20Detailed {
   
   /**
   * @dev Get Latest Exchange Rate
-  * @param _erc20aggregator - chainlink aggregator address of the erc20/usd pair
+  * @param _amount - amoujnt for which to fetch the rate
   */
-  function getExchangeRate(address _erc20aggregator, int256 _amount) public {
-    // setting the reference contract
-    setReferenceContract(_erc20aggregator);
+  function getExchangeRate(int256 _amount) public view returns(int256) {
     // locking token in contract
     int256 usdExchangeAmount = erc20Ref.latestAnswer().mul(_amount);
     // precision issue in fiatMintingAmount due to division
     int256 fiatMintingAmount = usdExchangeAmount.div(fiatRef.latestAnswer());
-    emit ExchangeRate(fiatMintingAmount);
+    return fiatMintingAmount;
   }
 }
