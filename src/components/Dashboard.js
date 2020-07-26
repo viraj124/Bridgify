@@ -23,7 +23,12 @@ class App extends Component {
             },
             showError: false,
             showSuccess: false,
-			outputAmount: 0
+			outputAmount: "output",
+			eurBalance: 0,
+			gbpBalance: 0,
+			jpyBalance: 0,
+			
+			
 
         };
     }
@@ -49,6 +54,7 @@ class App extends Component {
         try {
             await this.loadWeb3();
             await this.loadBlockchainData();
+			await this.loadTokenBalances();
             await this.showShortner()
             this.setState({color: "#0ff279"});
             this.setState({buttonText: this.state.shortnerAddress});
@@ -72,20 +78,25 @@ class App extends Component {
         const eurInstance = new this.state.web3.eth.Contract(BridgifyEUR.abi, config.eurAddress);
         const gbpInstance = new this.state.web3.eth.Contract(BridgifyEUR.abi, config.gbpAddress);
         const jpyInstance = new this.state.web3.eth.Contract(BridgifyEUR.abi, config.jpyAddress);
-        const eurBalance = await getBalance(this.state.web3, eurInstance, accounts[0])
-        const gbpBalance = await getBalance(this.state.web3, gbpInstance, accounts[0])
-        const jpyBalance = await getBalance(this.state.web3, jpyInstance, accounts[0])
-
-        this.setState({
+		
+		this.setState({
             eurInstance,
             gbpInstance,
-            jpyInstance,
-            eurBalance,
-            gbpBalance,
-            jpyBalance
+            jpyInstance
         });
     }
+	
+	async loadTokenBalances() {
+		const eurBalance = await getBalance(this.state.web3, this.state.eurInstance, this.state.account);
+		const jpyBalance = await getBalance(this.state.web3, this.state.jpyInstance, this.state.account);
+        const gbpBalance = await getBalance(this.state.web3, this.state.gbpInstance, this.state.account);
 
+        this.setState({
+            eurBalance,
+			jpyBalance,
+            gbpBalance
+        });
+	}
 
     // another method to get exchange rate
     /*
