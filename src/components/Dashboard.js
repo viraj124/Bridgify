@@ -200,21 +200,21 @@ class App extends Component {
                                                   <div className="card2">
                                                     <div className = "box6">
                                                     <div>EUR</div>
-													<div>amount</div>
+													<div>{this.state.eurBalance}</div>
 													</div>
                                                   </div>
 
                                                   <div className="card2">
                                                     <div className = "box6">
                                                     <div>JPY</div>
-													<div>amount</div>
+													<div>{this.state.jpyBalance}</div>
 													</div>
                                                   </div>
 
                                                   <div className="card2">
                                                     <div className = "box6">
                                                     <div>GBP</div>
-													<div>amount</div>
+													<div>{this.state.gbpBalance}</div>
 													</div>
                                                   </div>
                                                 </div>
