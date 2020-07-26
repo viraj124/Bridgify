@@ -23,6 +23,12 @@ class App extends Component {
             },
             showError: false,
             showSuccess: false,
+			outputAmount: "output",
+			eurBalance: 0,
+			gbpBalance: 0,
+			jpyBalance: 0,
+			
+			
 
         };
     }
@@ -48,6 +54,7 @@ class App extends Component {
         try {
             await this.loadWeb3();
             await this.loadBlockchainData();
+			await this.loadTokenBalances();
             await this.showShortner()
             this.setState({color: "#0ff279"});
             this.setState({buttonText: this.state.shortnerAddress});
@@ -71,20 +78,25 @@ class App extends Component {
         const eurInstance = new this.state.web3.eth.Contract(BridgifyEUR.abi, config.eurAddress);
         const gbpInstance = new this.state.web3.eth.Contract(BridgifyEUR.abi, config.gbpAddress);
         const jpyInstance = new this.state.web3.eth.Contract(BridgifyEUR.abi, config.jpyAddress);
-        const eurBalance = await getBalance(this.state.web3, eurInstance, accounts[0])
-        const gbpBalance = await getBalance(this.state.web3, gbpInstance, accounts[0])
-        const jpyBalance = await getBalance(this.state.web3, jpyInstance, accounts[0])
-
-        this.setState({
+		
+		this.setState({
             eurInstance,
             gbpInstance,
-            jpyInstance,
-            eurBalance,
-            gbpBalance,
-            jpyBalance
+            jpyInstance
         });
     }
+	
+	async loadTokenBalances() {
+		const eurBalance = await getBalance(this.state.web3, this.state.eurInstance, this.state.account);
+		const jpyBalance = await getBalance(this.state.web3, this.state.jpyInstance, this.state.account);
+        const gbpBalance = await getBalance(this.state.web3, this.state.gbpInstance, this.state.account);
 
+        this.setState({
+            eurBalance,
+			jpyBalance,
+            gbpBalance
+        });
+	}
 
     // another method to get exchange rate
     /*
@@ -187,24 +199,38 @@ class App extends Component {
                                         <div class="gridcontent1">
                                             <div className="box4">
 
-                                                <div>Balances</div>
+                                                <div className="box3">Balance</div>
+                                                
+												<div className="box7">
+                                                  <div className="card2">
+												    <div className = "box6">
+                                                    <div>DAI</div>
+													<div>amount</div>
+													</div>
+                                                   </div>
 
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
+                                                  <div className="card2">
+                                                    <div className = "box6">
+                                                    <div>EUR</div>
+													<div>{this.state.eurBalance}</div>
+													</div>
+                                                  </div>
+
+                                                  <div className="card2">
+                                                    <div className = "box6">
+                                                    <div>JPY</div>
+													<div>{this.state.jpyBalance}</div>
+													</div>
+                                                  </div>
+
+                                                  <div className="card2">
+                                                    <div className = "box6">
+                                                    <div>GBP</div>
+													<div>{this.state.gbpBalance}</div>
+													</div>
+                                                  </div>
                                                 </div>
-
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
-                                                </div>
-
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
-                                                </div>
-
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
-                                                </div>
-
+                                            
                                             </div>
                                         </div>
                                     </div>
@@ -215,11 +241,11 @@ class App extends Component {
                                 <div class="gridcontainer2">
                                     <div class="gridbody2">
                                         <div class="gridcontent2">
-                                            <div className="box3">
+                                            
 
                                                 <form>
 
-                                                    <div className="box4">
+                                                    <div className="box5">
 
                                                         <div>
                                                             <input className="input"
@@ -228,7 +254,7 @@ class App extends Component {
                                                             <div className="custom-select">
                                                                 <select className="select2"  onChange={this.handleInputAssetChange}>
                                                                     <option selected disabled>
-                                                                        Select Input Asset
+                                                                        Select Asset
                                                                     </option>
                                                                     <option>EUR</option>
                                                                     <option>JPY</option>
@@ -241,12 +267,12 @@ class App extends Component {
                                                         <div>
                                                         {/* this needs to be fixed and dependednty on the input amount see a way to update realtime */}
                                                             <input className="input"
-                                                                placeholder={`output`}/>
+                                                                placeholder={this.state.outputAmount}/>
 
                                                             <div className="custom-select">
                                                                 <select className="select2" onChange={this.handleOutputAssetChange}>
                                                                     <option selected disabled>
-                                                                        Select Output Asset
+                                                                        Select Asset
                                                                     </option>
                                                                     {this.state.inputAsset === "DAI" && <option>EUR</option>}
                                                                     {this.state.inputAsset === "DAI" && <option>JPY</option>}
@@ -257,7 +283,7 @@ class App extends Component {
                                                         </div>
 
                                                         <div>
-                                                            <button type="button" className="new-button2 shadow animate red">
+                                                            <button type="button" className="swapbutton2">
                                                                 Swap
                                                             </button>
                                                         </div>
@@ -265,7 +291,7 @@ class App extends Component {
                                                     </div>
                                                 </form>
 
-                                            </div>
+                                          
                                         </div>
                                     </div>
                                 </div>
