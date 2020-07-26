@@ -188,23 +188,37 @@ class App extends Component {
                                             <div className="box4">
 
                                                 <div className="box3">Balance</div>
+                                                
+												<div className="box7">
+                                                  <div className="card2">
+												    <div className = "box6">
+                                                    <div>DAI</div>
+													<div>amount</div>
+													</div>
+                                                   </div>
 
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
+                                                  <div className="card2">
+                                                    <div className = "box6">
+                                                    <div>EUR</div>
+													<div>amount</div>
+													</div>
+                                                  </div>
+
+                                                  <div className="card2">
+                                                    <div className = "box6">
+                                                    <div>JPY</div>
+													<div>amount</div>
+													</div>
+                                                  </div>
+
+                                                  <div className="card2">
+                                                    <div className = "box6">
+                                                    <div>GBP</div>
+													<div>amount</div>
+													</div>
+                                                  </div>
                                                 </div>
-
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
-                                                </div>
-
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
-                                                </div>
-
-                                                <div className="card2">
-                                                    heysfdsgsdgdsggds
-                                                </div>
-
+                                            
                                             </div>
                                         </div>
                                     </div>
@@ -215,7 +229,7 @@ class App extends Component {
                                 <div class="gridcontainer2">
                                     <div class="gridbody2">
                                         <div class="gridcontent2">
-                                            <div className="box3">
+                                            
 
                                                 <form>
 
@@ -265,7 +279,7 @@ class App extends Component {
                                                     </div>
                                                 </form>
 
-                                            </div>
+                                          
                                         </div>
                                     </div>
                                 </div>
