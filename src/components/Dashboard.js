@@ -23,6 +23,7 @@ class App extends Component {
             },
             showError: false,
             showSuccess: false,
+			outputAmount: 0
 
         };
     }
@@ -255,7 +256,7 @@ class App extends Component {
                                                         <div>
                                                         {/* this needs to be fixed and dependednty on the input amount see a way to update realtime */}
                                                             <input className="input"
-                                                                placeholder={this.state.eurbalance}/>
+                                                                placeholder={this.state.outputAmount}/>
 
                                                             <div className="custom-select">
                                                                 <select className="select2" onChange={this.handleOutputAssetChange}>
