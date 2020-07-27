@@ -42,7 +42,8 @@ FIAT <-> DAI
 
 
 ## Video
-Whole Demo [here](https://www.youtube.com/watch?v=Z3Z4zIjbC1c)
+[![](http://img.youtube.com/vi/Z3Z4zIjbC1c/0.jpg)](http://www.youtube.com/watch?v=Z3Z4zIjbC1c "Bridgify")
+
 
 
 ## Website
