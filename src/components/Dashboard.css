@@ -57,7 +57,7 @@ body {
 
 .gridbody1 {
   height: 85vh;
-  width: 60vh;
+  width: 58vh;
   border-radius:10px;
   margin:10px 10px 10px 10px;
   display: grid;
@@ -516,7 +516,6 @@ form {
 }
 
 .select2 {
-  width: 100%;
   position: relative;
   height: 55.5px;
   cursor: pointer;
@@ -701,7 +700,7 @@ form {
 
 .swapbutton2 {
   display: block;
-  margin-left: 282px;
+  margin-left: 370px;
   cursor: pointer;
   outline: none;
   border: none;

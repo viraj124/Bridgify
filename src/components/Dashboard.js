@@ -114,7 +114,7 @@ class App extends Component {
             }
             this.setState({exchangeRate: Number(exchangeRate).toFixed(2)});
         } catch (err) {
-            this.setState({errMessage: err});
+            this.setState({errMessage: "Please reload the page once and select the inputs again."});
             this.showErrorModal();
         }
     }
