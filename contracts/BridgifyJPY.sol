@@ -436,6 +436,8 @@ contract ERC20Detailed is IERC20 {
 
 
 contract BridgifyJPY is ERC20, ERC20Detailed {
+  event ExchangeRate(int256 finalExchangeRate);
+
   using SafeMath for int256;
   AggregatorInterface internal erc20Ref;
   AggregatorInterface internal fiatRef;
@@ -469,8 +471,7 @@ contract BridgifyJPY is ERC20, ERC20Detailed {
   * @param _amount - amount to redeem
   */
   function redeem (address token, int256 _amount) external {
-    require(IERC20(token).balanceOf(address(this)) > _amount, "The contract should have enough balance to transfer");
-    require(IERC20(address(this)).balanceOf(msg.sender) >= _amount, "Low on EUR Balance");
+    require(IERC20(address(this)).balanceOf(msg.sender) >= _amount, "Low on JPY Balance");
     int256 usdExchangeAmount = fiatRef.latestAnswer().mul(_amount);
     int256 daiRedeemAmount = usdExchangeAmount.div(erc20Ref.latestAnswer());
     _burn(msg.sender, _amount);
@@ -488,5 +489,6 @@ contract BridgifyJPY is ERC20, ERC20Detailed {
     // precision issue in fiatMintingAmount due to division
     int256 fiatMintingAmount = usdExchangeAmount.div(fiatRef.latestAnswer());
     return fiatMintingAmount;
+    // emit ExchangeRate(fiatMintingAmount);
   }
 }

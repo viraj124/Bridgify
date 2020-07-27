@@ -9,7 +9,7 @@ class Home extends Component {
       <div id="container">
 	  <div className="content">
       <h1>Bridgify</h1>
-      <h3>An ERC20-FIAT Swap Protocol</h3>
+      <h3>A Bridge Between DeFi and CeFi</h3>
 <Link to='/dashboard'><button type="submit" id="btn">Dashboard</button></Link>
 </div>
 </div>

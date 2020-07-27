@@ -1,5 +1,5 @@
 /**
- *Submitted for verification at Etherscan.io on 2020-07-26
+ *Submitted for verification at Etherscan.io on 2020-07-27
 */
 
 // File: @chainlink\contracts\src\v0.5\interfaces\AggregatorInterface.sol
@@ -436,6 +436,8 @@ contract ERC20Detailed is IERC20 {
 
 
 contract BridgifyEUR is ERC20, ERC20Detailed {
+  event ExchangeRate(int256 finalExchangeRate);
+
   using SafeMath for int256;
   AggregatorInterface internal erc20Ref;
   AggregatorInterface internal fiatRef;
@@ -464,12 +466,11 @@ contract BridgifyEUR is ERC20, ERC20Detailed {
   }
   
   /**
-  * @dev Redeem your EUR Tokens for the ERC20 Tokens locked in the contract
+  * @dev Redeem your DAI Tokens for the FIAT Tokens locked in the contract
   * @param token - token address you wish to get back
   * @param _amount - amount to redeem
   */
   function redeem (address token, int256 _amount) external {
-    require(IERC20(token).balanceOf(address(this)) > _amount, "The contract should have enough balance to transfer");
     require(IERC20(address(this)).balanceOf(msg.sender) >= _amount, "Low on EUR Balance");
     int256 usdExchangeAmount = fiatRef.latestAnswer().mul(_amount);
     int256 daiRedeemAmount = usdExchangeAmount.div(erc20Ref.latestAnswer());
@@ -488,5 +489,6 @@ contract BridgifyEUR is ERC20, ERC20Detailed {
     // precision issue in fiatMintingAmount due to division
     int256 fiatMintingAmount = usdExchangeAmount.div(fiatRef.latestAnswer());
     return fiatMintingAmount;
+    // emit ExchangeRate(fiatMintingAmount);
   }
 }
