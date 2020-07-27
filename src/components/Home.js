@@ -8,9 +8,9 @@ class Home extends Component {
     return (
       <div id="container">
 	  <div className="content">
-      <h1>FIAT</h1>
-      <h3>SWAP</h3>
-<Link to='/dashboard'><button type="submit" id="btn">Try Dashboard</button></Link>
+      <h1>Bridgify</h1>
+      <h3>An ERC20-FIAT Swap Protocol</h3>
+<Link to='/dashboard'><button type="submit" id="btn">Dashboard</button></Link>
 </div>
 </div>
     );

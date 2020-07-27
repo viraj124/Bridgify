@@ -23,6 +23,7 @@ class App extends Component {
             },
             showError: false,
             showSuccess: false,
+            showWarning: false,
             outputAmount: "output",
             eurBalance: 0,
             gbpBalance: 0,
@@ -31,8 +32,10 @@ class App extends Component {
         };
     }
 
-    async componentWillMount() {}
-    async loadWeb3() {
+  async componentWillMount() {
+    this.showWarningModal();
+  }
+  async loadWeb3() {
         const providerOptions = { /* See Provider Options Section */
             authereum: {
                 package: Authereum, // required
@@ -57,7 +60,6 @@ class App extends Component {
             this.setState({color: "#FFB6C1"});
             this.setState({buttonText: this.state.shortnerAddress});
         } catch (err) {
-            console.log(err);
             this.setState({color: "#FFFAFA", buttonText: "Try Again", errMessage: "Please select Ropsten in your wallet"});
             this.showErrorModal();
         }
@@ -89,7 +91,7 @@ class App extends Component {
 
             this.setState({eurBalance: Number(eurBalance).toFixed(2), jpyBalance: Number(jpyBalance).toFixed(2), gbpBalance: Number(gbpBalance).toFixed(2)});
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Connect your Metamask Wallet First"});
             this.showErrorModal();
         }
     }
@@ -106,13 +108,15 @@ class App extends Component {
             }
             let exchangeRate = await fiatInstance.methods.getExchangeRate(amount).call({from: this.state.account});
             exchangeRate = await weitoether(this.state.web3, exchangeRate);
+            // If you are redeeming i.e outputAsset is DAI
             if (this.state.outputAsset === "DAI") {
                 amount = await weitoether(this.state.web3, amount);
+                // Since in contract the amount is multiplied for the dai-fiat exchange rate so multiplying by amount**2 and then dividing to get fiat-dai rate
                 exchangeRate = (amount * amount) / exchangeRate;
             }
             this.setState({exchangeRate: Number(exchangeRate).toFixed(2)});
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Connect your Metamask Wallet First"});
             this.showErrorModal();
         }
     }
@@ -137,10 +141,9 @@ class App extends Component {
             this.setState({
                 successMessage: "https://etherscan.io/tx/" + tx["transactionHash"]
             });
-            this.loadTokenBalances();
             this.showSuccessModal();
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Transaction Failed, Please check your inputs"});
             this.showErrorModal();
         }
     }
@@ -158,10 +161,9 @@ class App extends Component {
             this.setState({
                 successMessage: "https://etherscan.io/tx/" + tx["transactionHash"]
             });
-            this.loadTokenBalances();
             this.showSuccessModal();
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Transaction Failed, Please check your inputs"});
             this.showErrorModal();
         }
     }
@@ -174,9 +176,10 @@ class App extends Component {
                 if (this.state.outputAsset && this.state.amount) 
                     await this.loadExchangeRate(this.state.amount);
                 
+
             });
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Connect your Metamask Wallet first"});
             this.showErrorModal(evt);
         }
     };
@@ -190,9 +193,10 @@ class App extends Component {
                 if (this.state.inputAsset && this.state.amount) 
                     await this.loadExchangeRate(this.state.amount);
                 
+
             });
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Connect your Metamask Wallet first"});
             this.showErrorModal(evt);
         }
     };
@@ -203,9 +207,10 @@ class App extends Component {
                 await this.loadExchangeRate(amount);
             
 
+
             this.setState({amount});
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet Once!"});
+            this.setState({errMessage: "Connect your Metamask Wallet first"});
             this.showErrorModal(evt);
         }
     };
@@ -224,10 +229,18 @@ class App extends Component {
         this.setState({showError: false});
     };
     showSuccessModal = (e) => {
+        this.loadTokenBalances();
         this.setState({showSuccess: true});
     };
     hideSuccessModal = (e) => {
         this.setState({showSuccess: false});
+    };
+    showWarningModal = (e) => {
+        this.setState({showWarning: true});
+    };
+
+    hideWarningModal = (e) => {
+        this.setState({showWarning: false});
     };
 
     render() {
@@ -257,42 +270,99 @@ class App extends Component {
                             <div class="gridcontainer1">
                                 <div class="gridbody1">
                                     <div class="gridcontent1">
-                                        <div className="box4">
-                                            <div className="box3">Balance</div>
+                                     <Modal
+                      show={this.state.showSuccess}
+                      onHide={this.hideSuccessModal}
+                    >
+                                        <Modal.Body>
+                                            <a href={
+                                                this.state.successMessage
+                                            }>
+                                                Check Transaction
+                                            </a>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <button onClick={
+                                                this.hideSuccessModal
+                                            }>Cancel</button>
+                                        </Modal.Footer>
+                                        {" "} </Modal>
+                                    <Modal show={
+                                            this.state.showWarning
+                                        }
+                                        onHide={
+                                            this.hideWarningModal
+                                    }>
+                                        <Modal.Header>
+                                            <Modal.Title>
+                                                <b>NOTE</b>
+                                            </Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            The DAI Amount that you swap, 3% of it is used as extra collateral and locked in the contract, so the amount swapped is rest of the 97% amount to account for DAI Price Flucuations.
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <button onClick={
+                                                this.hideWarningModal
+                                            }>Cancel</button>
+                                        </Modal.Footer>
+                                        {" "} </Modal>
+                                    <Modal show={
+                                            this.state.showError
+                                        }
+                                        onHide={
+                                            this.hideErrorModal
+                                    }>
+                                        <Modal.Header>
+                                            <Modal.Title>
+                                                <b>Error</b>
+                                            </Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>{
+                                            this.state.errMessage
+                                        }</Modal.Body>
+                                        <Modal.Footer>
+                                            <button onClick={
+                                                this.hideErrorModal
+                                            }>Cancel</button>
+                                        </Modal.Footer>
+                                        {" "} </Modal>
 
-                                            <div className="box7">
-                                                <div className="card2">
-                                                    <div className="box6">
-                                                        <div>Asset</div>
-                                                        <div>Balance</div>
-                                                    </div>
+                                    <div className="box4">
+                                        <div className="box3">Balance</div>
+
+                                        <div className="box7">
+                                            <div className="card2">
+                                                <div className="box6">
+                                                    <div>Asset</div>
+                                                    <div>Balance</div>
                                                 </div>
+                                            </div>
 
-                                                <div className="card2">
-                                                    <div className="box6">
-                                                        <div>EUR</div>
-                                                        <div>{
-                                                            this.state.eurBalance
-                                                        }</div>
-                                                    </div>
+                                            <div className="card2">
+                                                <div className="box6">
+                                                    <div>EUR</div>
+                                                    <div>{
+                                                        this.state.eurBalance
+                                                    }</div>
                                                 </div>
+                                            </div>
 
-                                                <div className="card2">
-                                                    <div className="box6">
-                                                        <div>JPY</div>
-                                                        <div>{
-                                                            this.state.jpyBalance
-                                                        }</div>
-                                                    </div>
+                                            <div className="card2">
+                                                <div className="box6">
+                                                    <div>JPY</div>
+                                                    <div>{
+                                                        this.state.jpyBalance
+                                                    }</div>
                                                 </div>
+                                            </div>
 
-                                                <div className="card2">
-                                                    <div className="box6">
-                                                        <div>GBP</div>
-                                                        <div>{
-                                                            this.state.gbpBalance
-                                                        }</div>
-                                                    </div>
+                                            <div className="card2">
+                                                <div className="box6">
+                                                    <div>GBP</div>
+                                                    <div>{
+                                                        this.state.gbpBalance
+                                                    }</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -300,86 +370,86 @@ class App extends Component {
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="box2">
-                            <div class="gridcontainer2">
-                                <div class="gridbody2">
-                                    <div class="gridcontent2">
-                                        <form>
-                                            <div className="box5">
-                                                <div>
-                                                    <input className="input" type="number"
-                                                        placeholder={`Amount to Swap`}
+                    <div className="box2">
+                        <div class="gridcontainer2">
+                            <div class="gridbody2">
+                                <div class="gridcontent2">
+                                    <form>
+                                        <div className="box5">
+                                            <div>
+                                                <input className="input" type="number"
+                                                    placeholder={`Amount to Swap`}
+                                                    onChange={
+                                                        this.handleAmountChange
+                                                    }/>
+                                                }
+                                                <div className="custom-select">
+                                                    <select className="select2"
                                                         onChange={
-                                                            this.handleAmountChange
-                                                        }/>
-                                                    }
-                                                    <div className="custom-select">
-                                                        <select className="select2"
-                                                            onChange={
-                                                                this.handleInputAssetChange
-                                                        }>
-                                                            <option value="" selected disabled>
-                                                                Select Asset
-                                                            </option>
-                                                            <option>DAI</option>
-                                                            <option>EUR</option>
-                                                            <option>JPY</option>
-                                                            <option>GBP</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div> {" "}
-                                                    {/* this needs to be fixed and dependednty on the input amount see a way to update realtime */}
-                                                    <input className="input" placeholder="Exchange Rate"
-                                                        value={
-                                                            this.state.exchangeRate
-                                                        }
-                                                        readonly="readonly"/>
-                                                    <div className="custom-select">
-                                                        <select className="select2"
-                                                            onChange={
-                                                                this.handleOutputAssetChange
-                                                        }>
-                                                            <option value="" selected disabled>
-                                                                Select Asset
-                                                            </option>
-                                                            {
-                                                            this.state.inputAsset === "DAI" && (
-                                                                <option>EUR</option>
-                                                            )
-                                                        }
-                                                            {
-                                                            this.state.inputAsset === "DAI" && (
-                                                                <option>JPY</option>
-                                                            )
-                                                        }
-                                                            {
-                                                            this.state.inputAsset === "DAI" && (
-                                                                <option>GBP</option>
-                                                            )
-                                                        }
-                                                            {
-                                                            this.state.inputAsset !== "DAI" && (
-                                                                <option>DAI</option>
-                                                            )
-                                                        }
-                                                            {" "} </select>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <button type="button" className="swapbutton2"
-                                                        onClick={
-                                                            this.handleSwap
+                                                            this.handleInputAssetChange
                                                     }>
-                                                        Swap
-                                                    </button>
+                                                        <option value="" selected disabled>
+                                                            Select Asset to swap
+                                                        </option>
+                                                        <option>DAI</option>
+                                                        <option>EUR</option>
+                                                        <option>JPY</option>
+                                                        <option>GBP</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
+
+                                            <div> {" "}
+                                                {/* this needs to be fixed and dependednty on the input amount see a way to update realtime */}
+                                                <input className="input" placeholder="Exchange Rate"
+                                                    value={
+                                                        this.state.exchangeRate
+                                                    }
+                                                    readonly="readonly"/>
+                                                <div className="custom-select">
+                                                    <select className="select2"
+                                                        onChange={
+                                                            this.handleOutputAssetChange
+                                                    }>
+                                                        <option value="" selected disabled>
+                                                            Select Asset to get
+                                                        </option>
+                                                        {
+                                                        this.state.inputAsset === "DAI" && (
+                                                            <option>EUR</option>
+                                                        )
+                                                    }
+                                                        {
+                                                        this.state.inputAsset === "DAI" && (
+                                                            <option>JPY</option>
+                                                        )
+                                                    }
+                                                        {
+                                                        this.state.inputAsset === "DAI" && (
+                                                            <option>GBP</option>
+                                                        )
+                                                    }
+                                                        {
+                                                        this.state.inputAsset !== "DAI" && (
+                                                            <option>DAI</option>
+                                                        )
+                                                    }
+                                                        {" "} </select>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <button type="button" className="swapbutton2"
+                                                    onClick={
+                                                        this.handleSwap
+                                                }>
+                                                    Swap
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -387,9 +457,10 @@ class App extends Component {
                 </div>
             </div>
         </div>
-        );
-          }
-        }
-        
-        export default App;
+    </div>
+    );
+              }
+            }
+            
+            export default App;
 
