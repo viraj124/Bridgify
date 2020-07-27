@@ -295,7 +295,7 @@ class App extends Component {
                                             </Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            The DAI Amount that you swap, 3% of it is used as extra collateral and locked in the contract, so the amount swapped is rest of the 97% amount to account for DAI Price Flucuations.
+                                            The DAI Amount that you swap, 3% of it is used as extra collateral and locked in the contract, so the amount swapped is rest of the 97% amount to account for DAI Price Fluctuations.
                                         </Modal.Body>
                                         <Modal.Footer>
                                             <button onClick={
