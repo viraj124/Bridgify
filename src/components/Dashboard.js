@@ -95,7 +95,7 @@ class App extends Component {
 
     async loadExchangeRate(amount) {
         try {
-            amount = await handleBufferAmount(amount)
+            if (this.state.outputAsset !== "DAI") amount = await handleBufferAmount(amount)
             let fiatInstance;
             if (this.state.outputAsset === "EUR" || this.state.inputAsset === "EUR") {
                 fiatInstance = this.state.eurInstance;
@@ -133,11 +133,11 @@ class App extends Component {
                 fiatInstance = this.state.jpyInstance;
                 fiatAddress = config.jpyAddress;
             }
-            await this.state.daiInstance.methods.approve(fiatAddress, amount).send({from: this.state.account});
+            await this.state.daiInstance.methods.approve(fiatAddress, amount.toString()).send({from: this.state.account});
             let bufferAmount = await handleBufferAmount(amount);
             let tx = await fiatInstance.methods.depositFiat(config.dai, bufferAmount.toString()).send({from: this.state.account});
             this.setState({
-                successMessage: "https://etherscan.io/tx/" + tx["transactionHash"]
+                successMessage: "https://ropsten.etherscan.io/tx/" + tx["transactionHash"]
             });
             this.showSuccessModal();
         } catch (err) {
@@ -157,7 +157,7 @@ class App extends Component {
             }
             let tx = await fiatInstance.methods.redeem(config.dai, amount.toString()).send({from: this.state.account});
             this.setState({
-                successMessage: "https://etherscan.io/tx/" + tx["transactionHash"]
+                successMessage: "https://ropsten.etherscan.io/tx/" + tx["transactionHash"]
             });
             this.showSuccessModal();
         } catch (err) {
