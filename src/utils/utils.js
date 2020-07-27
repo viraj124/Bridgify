@@ -16,6 +16,11 @@
   }
 
   export const handleBufferAmount = async (amount) => {
+    try {
   // reducing 3% of the provided amount to handle buffer on the contract end
   return amount - ((amount*3)/100)
+    } catch(err) {
+      console.log(err)
+      throw err
+    }
   }

@@ -7,9 +7,6 @@ import ERC20 from "../abis/ERC20.json";
 import {getBalance, ethertowei, weitoether, handleBufferAmount} from "../utils/utils";
 import config from "../config/config";
 import Modal from "react-bootstrap/Modal";
-
-// abi will be same for all three contarcts only address differ
-
 import "./Dashboard.css";
 
 class App extends Component {
@@ -98,6 +95,7 @@ class App extends Component {
 
     async loadExchangeRate(amount) {
         try {
+            amount = await handleBufferAmount(amount)
             let fiatInstance;
             if (this.state.outputAsset === "EUR" || this.state.inputAsset === "EUR") {
                 fiatInstance = this.state.eurInstance;
@@ -106,17 +104,17 @@ class App extends Component {
             } else if (this.state.outputAsset === "JPY" || this.state.inputAsset === "JPY") {
                 fiatInstance = this.state.jpyInstance;
             }
-            let exchangeRate = await fiatInstance.methods.getExchangeRate(amount).call({from: this.state.account});
-            exchangeRate = await weitoether(this.state.web3, exchangeRate);
+            let exchangeRate = await fiatInstance.methods.getExchangeRate(amount.toString()).call({from: this.state.account});
+            exchangeRate = await weitoether(this.state.web3, exchangeRate.toString());
             // If you are redeeming i.e outputAsset is DAI
             if (this.state.outputAsset === "DAI") {
-                amount = await weitoether(this.state.web3, amount);
+                amount = await weitoether(this.state.web3, amount.toString());
                 // Since in contract the amount is multiplied for the dai-fiat exchange rate so multiplying by amount**2 and then dividing to get fiat-dai rate
                 exchangeRate = (amount * amount) / exchangeRate;
             }
             this.setState({exchangeRate: Number(exchangeRate).toFixed(2)});
         } catch (err) {
-            this.setState({errMessage: "Connect your Metamask Wallet First"});
+            this.setState({errMessage: err});
             this.showErrorModal();
         }
     }
@@ -202,12 +200,10 @@ class App extends Component {
     };
     handleAmountChange = async (evt) => {
         try {
-            const amount = await ethertowei(this.state.web3, evt.target.value);
+            let amt = evt.target.value
+            const amount = await ethertowei(this.state.web3, amt.toString());
             if (this.state.inputAsset && this.state.outputAsset) 
                 await this.loadExchangeRate(amount);
-            
-
-
             this.setState({amount});
         } catch (err) {
             this.setState({errMessage: "Connect your Metamask Wallet first"});
@@ -463,4 +459,3 @@ class App extends Component {
             }
             
             export default App;
-
