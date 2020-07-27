@@ -391,7 +391,7 @@ class App extends Component {
                                                             this.handleInputAssetChange
                                                     }>
                                                         <option value="" selected disabled>
-                                                            Select Asset to swap
+                                                            Select Input Asset
                                                         </option>
                                                         <option>DAI</option>
                                                         <option>EUR</option>
@@ -414,7 +414,7 @@ class App extends Component {
                                                             this.handleOutputAssetChange
                                                     }>
                                                         <option value="" selected disabled>
-                                                            Select Asset to get
+                                                            Select Output Asset
                                                         </option>
                                                         {
                                                         this.state.inputAsset === "DAI" && (
