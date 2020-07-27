@@ -141,7 +141,7 @@ class App extends Component {
             });
             this.showSuccessModal();
         } catch (err) {
-            this.setState({errMessage: "Transaction Failed, Please check your inputs"});
+            this.setState({errMessage: "Transaction Failed, Please check your inputs or it is taking too much time to confirm, check etherscan"});
             this.showErrorModal();
         }
     }
@@ -161,7 +161,7 @@ class App extends Component {
             });
             this.showSuccessModal();
         } catch (err) {
-            this.setState({errMessage: "Transaction Failed, Please check your inputs"});
+            this.setState({errMessage: "Transaction Failed, Please check your inputs or it is taking too much time to confirm, check etherscan"});
             this.showErrorModal();
         }
     }
